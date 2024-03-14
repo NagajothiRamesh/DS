@@ -1,0 +1,177 @@
+---
+title: "21bcs022-ex6"
+author: "Nagajothi"
+date: "2024-03-13"
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+
+## R Markdown
+
+```{r}
+
+
+
+#Common Questions:
+#1.Find out if the ‘cyl’ and ‘carb’ variables are in ‘mtcars’ dataset and whether it is dependent or not. 
+data(mtcars)
+names(mtcars)
+"cyl" %in% colnames(mtcars)
+"carb" %in% colnames(mtcars)
+cor_test=cor.test(mtcars$carb,mtcars$cyl,method="pearson")
+names(cor_test)
+if(cor_test$p.value<0.05){
+  print("Carb and Cyl are dependent.\n")
+} else{
+  print("Carb and Cyl are independent.\n")
+}
+#2.Use chi-squared test for the same.
+tab<-table(mtcars$carb,mtcars$cyl)
+chi_test=chisq.test(tab)
+names(chi_test)
+if(chi_test$p.value<0.05){
+   print("Carb and Cyl are dependent.\n")
+} else{
+   print("Carb and Cyl are not dependent.\n")
+}
+#3.Test the hypothesis whether the students smoking habit is independent 
+#of their exercise level at 0.05 significance level using survey dataset. 
+library(MASS)
+t<-table(survey$Smoke,survey$Exer)
+c<-chisq.test(t)
+c
+if(c$p.value<0.05){
+   print("Smoking Habit and exercise level are dependent.\n")
+}else{
+   print("Smoking Habit and exercise level are not dependent.\n")
+}
+#4.Conduct the Chi-squared independence test of the smoking and 
+#exercise survey by computing the p-value with the textbook formula. 
+obs<-c$observed
+exp<-round(c$observed,3)
+x<-((obs-exp)^2)/exp
+row<-nrow(t)
+col<-ncol(t)
+d<-(row-1)*(col-1)
+pchisq(q=sum(x),df=d,lower.tail=FALSE)
+
+
+
+#Individual Questions:
+#1.Chi-Squared Test:
+set.seed(0)
+x=sample(c("Male","Female"),1000,replace=TRUE)
+y=sample(c("BJP","CONGRESS","DMK"),1000,replace=TRUE)
+observed=table(x,y)
+observed
+#Built-in function calculation:
+chi_test=chisq.test(observed)
+names(chi_test)
+print(chi_test$p.value)
+if(chi_test$p.value<0.05){
+   print("Gender and Political preferences are dependent.\n")
+} else{
+   print("Gender and Political preferences are not dependent.\n")
+}
+# Chi-square calculation function
+calculate_chi_square <- function(observed) {
+  # Calculate row and column sums
+  row_sums <- rowSums(observed)
+  col_sums <- colSums(observed)
+  total_sum <- sum(observed)
+  
+  # Calculate expected frequencies for each attribute pair
+  expected <- matrix(NA, nrow = nrow(observed), ncol = ncol(observed))
+  for (i in 1:nrow(observed)) {
+    for (j in 1:ncol(observed)) {
+      expected[i, j] <- (row_sums[i] * col_sums[j]) / total_sum
+    }
+  }
+  
+  # Calculate chi-square statistic
+  chi_squared <- sum((observed - expected)^2 / expected)
+  
+  # Determine degrees of freedom
+  rows <- nrow(observed)
+  cols <- ncol(observed)
+  df <- (rows - 1) * (cols - 1)
+  
+  # Perform chi-square test
+  p_value <- 1 - pchisq(chi_squared, df)
+  
+  # Return chi-square statistic and p-value
+  return(list(chi_squared = chi_squared, p_value = p_value))
+}
+
+# Calculate chi-square statistic
+chi_square_results <- calculate_chi_square(observed)
+chi_squared <- chi_square_results$chi_squared
+p_value <- chi_square_results$p_value
+
+# Compare with default error rate
+alpha <- 0.001  # You can adjust this value based on your desired level of significance
+print(p_value)
+# Compare with significance level
+if (p_value < alpha) {
+  print("Gender and Political preferences are dependent.\n")
+} else {
+  print("Gender and Political preferences are dependent.\n")
+}
+
+#2.Correlation coefficient:
+x <- sample(1:100,100,replace=TRUE)  # Age in years
+y <- sample(1:1000,100,replace=TRUE)  # Salary in Rupees
+print(cor(x,y))
+
+# Calculate means
+mean_x <- mean(x)
+mean_y <- mean(y)
+
+# Calculate standard deviations
+sd_x <- sd(x)
+sd_y <- sd(y)
+
+# Number of data points
+n <- length(x)
+
+# Compute correlation coefficient manually
+correlation <- sum((x - mean_x) * (y - mean_y)) / 
+  (sqrt(sum((x - mean_x)^2)) * sqrt(sum((y - mean_y)^2)))
+correlation
+
+if (correlation==0){
+  cat("Age and salary are completely independent.\n")
+} else {
+  if(correlation>0){
+  cat("Age and salary are positively correlated.\n")
+} else {
+  cat("Age and salary are negatively correlated.\n")
+}
+}
+
+#3.Covariance Test:
+x <- sample(1:100,100,replace=TRUE)  # Age in years
+y <- sample(1:1000,100,replace=TRUE)  # Salary in Rupees
+print(cov(x,y))
+
+# Calculate means
+mean_x <- mean(x)
+mean_y <- mean(y)
+
+# Number of data points
+n <- length(x)
+
+# Determine if attributes are independent or not
+covariance <- sum((x - mean_x) * (y - mean_y)) / n
+covariance
+# Check if covariance is 0
+if (covariance == 0) {
+  cat("Age and salary are independent.\n")
+} else {
+  cat("Age and salary are dependent.\n")
+}
+
+
+```

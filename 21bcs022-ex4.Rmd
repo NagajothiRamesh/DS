@@ -1,0 +1,60 @@
+---
+title: "Histogram and Boxplot using R"
+author: "Nagajothi-21BCS022"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  word_document: default
+---
+
+## Histogram and Boxplot using R
+
+```{r}
+data(iris)
+library(MASS)
+install.packages("ggplot2")
+library(ggplot2)
+```
+
+**1.Extract the maximum information from a Histogram and Boxplot.**
+
+```{r}
+b<-subset(iris,select=-c(Species))
+b<-boxplot(b,ylim=c(0,10),main="Boxplot for IRIS")
+text(x=1,y=8.2,paste(max(iris$Sepal.Length),"(max)"))
+text(x=2,y=4.4,paste(max(iris$Sepal.Width),"(max)"))
+text(x=3,y=7.2,paste(max(iris$Petal.Length),"(max)"))
+text(x=4,y=3,paste(max(iris$Petal.Width),"(max)"))
+
+```
+
+**2.Consider the iris dataset,create a new variable called boxplot_data that excludes the species column.**
+
+```{r}
+
+boxplot_data<-subset(iris,select=-c(Species))
+boxplot(boxplot_data)
+```
+
+**3.Create histograms and Illustrate the distribution look like #within the petalLength feature of the Iris data set.**
+
+```{r}
+hist(iris$Petal.Length,main="Histogram for petal Length",xlab="Petal Length in cm")
+```
+
+**4.Create histograms that plot multiple features at once for any dataset.**
+
+```{r}
+hist(iris$Petal.Length,col="green",main="Histogram for IRIS",xlab="Features if IRIS")
+hist(iris$Petal.Width,col="pink",add=TRUE)
+```
+
+**5.Plot every feature from the Iris data set (excluding species, since it is non-numerical) in a histogram.**
+
+```{r}
+hist(iris$Petal.Length,col="blue")
+hist(iris$Petal.Width,col="yellow",add=TRUE)
+hist(iris$Sepal.Length,col="red",add=TRUE)
+hist(iris$Sepal.Width,col="orange",add=TRUE)
+
+```
